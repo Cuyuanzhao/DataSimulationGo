@@ -10,7 +10,8 @@ def trade(prices, buyThresh=0.001, sellThresh=0.001, interval=1):
     isHeld = True
     totalCount = 0
 
-    for i in range(0, len(prices), interval):
+    i = 0
+    while i < len(prices):
         price = prices[i]
         if isHeld: # need to sell
             if price >= preMax: # continue hold it
@@ -30,6 +31,12 @@ def trade(prices, buyThresh=0.001, sellThresh=0.001, interval=1):
                 buyPrices.append(price)
                 isHeld = True
                 preMax = price
+
+        # more aggressive at open (1 hour out of 6.5)
+        if i * 6 < len(prices):
+            i += 1
+        else:
+            i += interval
 
     # sell the share at close
     if len(sellPrices) < len(buyPrices):
